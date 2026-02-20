@@ -34,6 +34,7 @@ beforeAll(async () => {
 // Clear test data before each test
 beforeEach(async () => {
   // Delete in order respecting foreign key constraints
+  await prisma.auditLog.deleteMany();
   await prisma.testResult.deleteMany();
   await prisma.testRun.deleteMany();
   await prisma.finding.deleteMany();
@@ -62,7 +63,8 @@ export async function createTestUser(data: {
   role?: 'ADMIN' | 'USER' | 'VIEWER';
   isActive?: boolean;
 } = {}) {
-  const bcrypt = await import('bcryptjs');
+  const bcryptModule = await import('bcryptjs');
+  const bcrypt = bcryptModule.default || bcryptModule;
   const hashedPassword = await bcrypt.hash(data.password || 'TestPassword123!', 10);
 
   return prisma.user.create({
