@@ -1,0 +1,7 @@
+# Ignore frontend package for API deployment
+packages/web
+packages/sdk
+dist
+node_modules
+*.md
+!packages/api

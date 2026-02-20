@@ -1,0 +1,20 @@
+{
+  "name": "ai-redteam-platform",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=@trilogyworks/web",
+    "dev:api": "npm run dev --workspace=@trilogyworks/api",
+    "build": "cd packages/api && npx prisma generate && npm run build",
+    "build:all": "npm run build --workspaces",
+    "build:web": "npm run build --workspace=@trilogyworks/web",
+    "start": "cd packages/api && npm run start",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "db:migrate": "npm run db:migrate --workspace=@trilogyworks/api",
+    "db:generate": "npm run db:generate --workspace=@trilogyworks/api",
+    "db:seed": "npm run db:seed --workspace=@trilogyworks/api"
+  }
+}

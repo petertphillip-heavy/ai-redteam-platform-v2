@@ -1,0 +1,235 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// PAYLOAD LIBRARY
+// ============================================
+
+model Payload {
+  id          String          @id @default(cuid())
+  name        String
+  description String
+  category    PayloadCategory
+  subcategory String?
+  content     String          @db.Text
+  variables   Json?
+  severity    Severity        @default(MEDIUM)
+  tags        String[]
+  isActive    Boolean         @default(true)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  testResults TestResult[]
+
+  @@index([category])
+  @@index([severity])
+  @@index([isActive])
+}
+
+enum PayloadCategory {
+  PROMPT_INJECTION
+  DATA_EXTRACTION
+  GUARDRAIL_BYPASS
+  INTEGRATION_VULN
+}
+
+enum Severity {
+  CRITICAL
+  HIGH
+  MEDIUM
+  LOW
+  INFO
+}
+
+// ============================================
+// PROJECTS & TEST RUNS
+// ============================================
+
+model Project {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  targetUrl   String?
+  targetType  TargetType @default(API)
+  apiKey      String?
+  config      Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  testRuns TestRun[]
+  findings Finding[]
+  reports  Report[]
+
+  @@index([name])
+}
+
+enum TargetType {
+  API
+  CHATBOT
+  COPILOT
+  AGENT
+  CUSTOM
+}
+
+model TestRun {
+  id           String     @id @default(cuid())
+  projectId    String
+  project      Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  name         String?
+  status       TestStatus @default(PENDING)
+  config       Json?
+  categories   PayloadCategory[]
+  totalPayloads Int       @default(0)
+  completedPayloads Int   @default(0)
+  successfulAttacks Int   @default(0)
+  startedAt    DateTime?
+  completedAt  DateTime?
+  createdAt    DateTime   @default(now())
+
+  results TestResult[]
+
+  @@index([projectId])
+  @@index([status])
+}
+
+enum TestStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+// ============================================
+// TEST RESULTS
+// ============================================
+
+model TestResult {
+  id         String   @id @default(cuid())
+  testRunId  String
+  testRun    TestRun  @relation(fields: [testRunId], references: [id], onDelete: Cascade)
+  payloadId  String
+  payload    Payload  @relation(fields: [payloadId], references: [id])
+  request    Json
+  response   Json
+  success    Boolean
+  confidence Float?
+  duration   Int?
+  notes      String?
+  createdAt  DateTime @default(now())
+
+  finding Finding?
+
+  @@index([testRunId])
+  @@index([payloadId])
+  @@index([success])
+}
+
+// ============================================
+// FINDINGS
+// ============================================
+
+model Finding {
+  id           String          @id @default(cuid())
+  projectId    String
+  project      Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  testResultId String?         @unique
+  testResult   TestResult?     @relation(fields: [testResultId], references: [id])
+  title        String
+  description  String          @db.Text
+  severity     Severity
+  category     PayloadCategory
+  evidence     Json?
+  remediation  String?         @db.Text
+  status       FindingStatus   @default(OPEN)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  @@index([projectId])
+  @@index([severity])
+  @@index([status])
+}
+
+enum FindingStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  ACCEPTED_RISK
+  FALSE_POSITIVE
+}
+
+// ============================================
+// REPORTS
+// ============================================
+
+model Report {
+  id          String     @id @default(cuid())
+  projectId   String
+  project     Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  title       String
+  type        ReportType
+  content     Json
+  generatedAt DateTime   @default(now())
+
+  @@index([projectId])
+  @@index([type])
+}
+
+enum ReportType {
+  EXECUTIVE_SUMMARY
+  TECHNICAL_DETAIL
+  FULL_REPORT
+}
+
+// ============================================
+// USERS (for future auth)
+// ============================================
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      UserRole @default(USER)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  auditLogs AuditLog[]
+
+  @@index([email])
+}
+
+enum UserRole {
+  ADMIN
+  USER
+  VIEWER
+}
+
+// ============================================
+// AUDIT LOGGING
+// ============================================
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action    String   // CREATE, UPDATE, DELETE, LOGIN, LOGOUT, etc.
+  entity    String   // User, Project, Payload, TestRun, Finding, Report
+  entityId  String?
+  metadata  Json?    // Additional context
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([entity])
+  @@index([createdAt])
+}

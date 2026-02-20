@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    @apply bg-gray-100 text-gray-900 transition-colors duration-200;
+  }
+
+  .dark body,
+  body:has(.dark) {
+    @apply bg-slate-900 text-gray-100;
+  }
+
+  html.dark {
+    @apply bg-slate-900;
+  }
+
+  html.dark body {
+    @apply bg-slate-900 text-gray-100;
+  }
+}
+
+@layer components {
+  /* Card styles */
+  .card {
+    @apply bg-white rounded-lg shadow-sm border border-gray-200;
+    @apply dark:bg-slate-800 dark:border-slate-700;
+  }
+
+  /* Input styles */
+  .input {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-lg;
+    @apply focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500;
+    @apply dark:bg-slate-700 dark:border-slate-600 dark:text-white;
+    @apply dark:focus:ring-indigo-400 dark:focus:border-indigo-400;
+    @apply dark:placeholder-gray-400;
+  }
+
+  /* Button styles */
+  .btn-primary {
+    @apply px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium;
+    @apply hover:bg-indigo-700 transition-colors;
+    @apply dark:bg-indigo-500 dark:hover:bg-indigo-600;
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium;
+    @apply hover:bg-gray-300 transition-colors;
+    @apply dark:bg-slate-700 dark:text-gray-200 dark:hover:bg-slate-600;
+  }
+
+  /* Table styles */
+  .table-header {
+    @apply bg-gray-50 text-gray-600 text-left text-xs font-semibold uppercase tracking-wider;
+    @apply dark:bg-slate-800 dark:text-gray-400;
+  }
+
+  .table-row {
+    @apply border-b border-gray-200 hover:bg-gray-50;
+    @apply dark:border-slate-700 dark:hover:bg-slate-700/50;
+  }
+
+  .table-cell {
+    @apply px-6 py-4 text-sm text-gray-900;
+    @apply dark:text-gray-200;
+  }
+
+  /* Badge styles for dark mode */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+}

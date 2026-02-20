@@ -1,0 +1,60 @@
+{
+  "name": "@trilogyworks/ai-redteam",
+  "version": "1.0.0",
+  "description": "SDK for AI Red Team Platform - Programmatic AI security testing",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "types": "./dist/esm/index.d.ts"
+    }
+  },
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc && tsc -p tsconfig.cjs.json",
+    "test": "jest",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "ai",
+    "security",
+    "red-team",
+    "penetration-testing",
+    "prompt-injection",
+    "jailbreak",
+    "llm"
+  ],
+  "author": "TrilogyWorks",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/trilogyworks/ai-redteam-platform.git",
+    "directory": "packages/sdk"
+  },
+  "homepage": "https://github.com/trilogyworks/ai-redteam-platform/tree/main/packages/sdk#readme",
+  "bugs": {
+    "url": "https://github.com/trilogyworks/ai-redteam-platform/issues"
+  },
+  "dependencies": {
+    "axios": "^1.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0",
+    "tsx": "^4.19.0",
+    "jest": "^29.7.0",
+    "@types/jest": "^29.5.0",
+    "ts-jest": "^29.2.0"
+  },
+  "peerDependencies": {
+    "typescript": ">=5.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "examples"
+  ]
+}
