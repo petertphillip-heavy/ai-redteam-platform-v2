@@ -22,8 +22,10 @@ app.use(helmet());
 // CORS configuration - restrict to specific origins in production
 const corsOptions = {
   origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-    // Allow requests with no origin (mobile apps, curl, etc.) in development
-    if (!origin && env.NODE_ENV === 'development') {
+    // Allow requests with no origin (healthchecks, mobile apps, curl, server-to-server)
+    // This is safe because CORS is a browser security feature - non-browser clients
+    // can always make requests regardless of CORS settings
+    if (!origin) {
       return callback(null, true);
     }
 
@@ -37,7 +39,7 @@ const corsOptions = {
     }
 
     const allowedOrigins = env.CORS_ORIGIN.split(',').map(o => o.trim());
-    if (origin && allowedOrigins.includes(origin)) {
+    if (allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
 
