@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { asyncHandler } from '../middleware/async-handler.js';
 import {
   listPayloads,
   getPayload,
@@ -84,7 +85,7 @@ const router = Router();
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  */
-router.get('/', listPayloads);
+router.get('/', asyncHandler(listPayloads));
 
 /**
  * @swagger
@@ -113,7 +114,7 @@ router.get('/', listPayloads);
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  */
-router.get('/categories', getCategories);
+router.get('/categories', asyncHandler(getCategories));
 
 /**
  * @swagger
@@ -140,7 +141,7 @@ router.get('/categories', getCategories);
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  */
-router.get('/stats', getStats);
+router.get('/stats', asyncHandler(getStats));
 
 /**
  * @swagger
@@ -176,7 +177,7 @@ router.get('/stats', getStats);
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  */
-router.get('/category/:category', getPayloadsByCategory);
+router.get('/category/:category', asyncHandler(getPayloadsByCategory));
 
 /**
  * @swagger
@@ -211,7 +212,7 @@ router.get('/category/:category', getPayloadsByCategory);
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  */
-router.post('/import', bulkImport);
+router.post('/import', asyncHandler(bulkImport));
 
 /**
  * @swagger
@@ -247,7 +248,7 @@ router.post('/import', bulkImport);
  *       404:
  *         $ref: '#/components/responses/NotFoundError'
  */
-router.get('/:id', getPayload);
+router.get('/:id', asyncHandler(getPayload));
 
 /**
  * @swagger
@@ -289,7 +290,7 @@ router.get('/:id', getPayload);
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  */
-router.post('/', createPayload);
+router.post('/', asyncHandler(createPayload));
 
 /**
  * @swagger
@@ -333,7 +334,7 @@ router.post('/', createPayload);
  *       404:
  *         $ref: '#/components/responses/NotFoundError'
  */
-router.put('/:id', updatePayload);
+router.put('/:id', asyncHandler(updatePayload));
 
 /**
  * @swagger
@@ -369,7 +370,7 @@ router.put('/:id', updatePayload);
  *       404:
  *         $ref: '#/components/responses/NotFoundError'
  */
-router.patch('/:id/toggle', togglePayloadActive);
+router.patch('/:id/toggle', asyncHandler(togglePayloadActive));
 
 /**
  * @swagger
@@ -409,6 +410,6 @@ router.patch('/:id/toggle', togglePayloadActive);
  *       404:
  *         $ref: '#/components/responses/NotFoundError'
  */
-router.delete('/:id', deletePayload);
+router.delete('/:id', asyncHandler(deletePayload));
 
 export { router as payloadRoutes };

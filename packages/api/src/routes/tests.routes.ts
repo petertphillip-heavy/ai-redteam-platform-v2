@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { asyncHandler } from '../middleware/async-handler.js';
 import {
   getAllTests,
   startTest,
@@ -11,21 +12,21 @@ import {
 const router = Router();
 
 // GET /api/tests - List all test runs
-router.get('/', getAllTests);
+router.get('/', asyncHandler(getAllTests));
 
 // POST /api/tests - Start a new test run
-router.post('/', startTest);
+router.post('/', asyncHandler(startTest));
 
 // GET /api/tests/:id - Get test run details
-router.get('/:id', getTestRun);
+router.get('/:id', asyncHandler(getTestRun));
 
 // GET /api/tests/:id/progress - Get live test progress
-router.get('/:id/progress', getTestProgress);
+router.get('/:id/progress', asyncHandler(getTestProgress));
 
 // GET /api/tests/:id/results - Get test results
-router.get('/:id/results', getTestResults);
+router.get('/:id/results', asyncHandler(getTestResults));
 
 // POST /api/tests/:id/cancel - Cancel a running test
-router.post('/:id/cancel', cancelTest);
+router.post('/:id/cancel', asyncHandler(cancelTest));
 
 export { router as testRoutes };

@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { asyncHandler } from '../middleware/async-handler.js';
 import { requireRole } from '../middleware/auth.js';
 import {
   listUsers,
@@ -64,7 +65,7 @@ router.use(requireRole('ADMIN'));
  *       403:
  *         description: Forbidden - requires admin role
  */
-router.get('/', listUsers);
+router.get('/', asyncHandler(listUsers));
 
 /**
  * @swagger
@@ -83,7 +84,7 @@ router.get('/', listUsers);
  *       403:
  *         description: Forbidden - requires admin role
  */
-router.get('/stats', getUserStats);
+router.get('/stats', asyncHandler(getUserStats));
 
 /**
  * @swagger
@@ -111,7 +112,7 @@ router.get('/stats', getUserStats);
  *       404:
  *         $ref: '#/components/responses/NotFoundError'
  */
-router.get('/:id', getUser);
+router.get('/:id', asyncHandler(getUser));
 
 /**
  * @swagger
@@ -155,7 +156,7 @@ router.get('/:id', getUser);
  *       404:
  *         $ref: '#/components/responses/NotFoundError'
  */
-router.put('/:id', updateUser);
+router.put('/:id', asyncHandler(updateUser));
 
 /**
  * @swagger
@@ -183,7 +184,7 @@ router.put('/:id', updateUser);
  *       404:
  *         $ref: '#/components/responses/NotFoundError'
  */
-router.delete('/:id', deleteUser);
+router.delete('/:id', asyncHandler(deleteUser));
 
 /**
  * @swagger
@@ -225,7 +226,7 @@ router.delete('/:id', deleteUser);
  *       404:
  *         $ref: '#/components/responses/NotFoundError'
  */
-router.patch('/:id/role', changeUserRole);
+router.patch('/:id/role', asyncHandler(changeUserRole));
 
 /**
  * @swagger
@@ -253,6 +254,6 @@ router.patch('/:id/role', changeUserRole);
  *       404:
  *         $ref: '#/components/responses/NotFoundError'
  */
-router.patch('/:id/status', toggleUserStatus);
+router.patch('/:id/status', asyncHandler(toggleUserStatus));
 
 export { router as usersRoutes };
