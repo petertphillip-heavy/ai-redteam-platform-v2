@@ -367,13 +367,32 @@ CSV export endpoints for compliance and reporting:
 
 1. **Type Safety**: Use strict TypeScript types; no `any`
 2. **API Responses**: Follow `ApiResponse<T>` and `PaginatedResponse<T>` patterns
-3. **Error Handling**: Use centralized error handler; wrap async routes
+3. **Error Handling**: Use `asyncHandler()` wrapper for all async route handlers (Express 4 requirement)
 4. **Styling**: Tailwind CSS utilities; support dark mode via `useTheme()`
 5. **State**: TanStack Query for server state; React Context for client state
 6. **Validation**: Zod schemas for both frontend and backend
 7. **Logging**: Use Pino logger with request IDs for traceability
 8. **Accessibility**: ARIA labels, keyboard navigation, focus management
 9. **Security**: Never log sensitive data; use parameterized queries
+
+## Async Error Handling
+
+Express 4 doesn't automatically catch errors from async route handlers. All async route handlers must be wrapped with `asyncHandler()`:
+
+```typescript
+import { asyncHandler } from '../middleware/async-handler.js';
+
+// Correct - errors will be caught and passed to error handler
+router.get('/', asyncHandler(async (req, res) => {
+  const data = await service.getData();
+  res.json({ success: true, data });
+}));
+
+// Wrong - errors will crash the server
+router.get('/', async (req, res) => { ... });
+```
+
+The `asyncHandler` utility is located at `packages/api/src/middleware/async-handler.ts`.
 
 ## Types
 
