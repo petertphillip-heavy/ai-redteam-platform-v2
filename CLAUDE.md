@@ -4,7 +4,9 @@
 
 This is the **AI Red Team Platform** by TrilogyWorks - a security testing platform designed to identify vulnerabilities in AI systems through automated red-teaming.
 
-**Deployment**: Railway (API) + Vercel/Railway (Web) with Supabase PostgreSQL backend.
+**Deployment**: Railway (API) with Supabase PostgreSQL backend.
+- **API URL**: `https://api-server-production-a8cc.up.railway.app`
+- **Health Check**: `GET /health` (unauthenticated)
 
 ## Tech Stack
 
@@ -331,6 +333,27 @@ npm run test --workspace=@trilogyworks/web
 ```bash
 npm run test --workspace=@trilogyworks/api
 ```
+
+## Railway Deployment
+
+### Configuration Files
+- `packages/api/nixpacks.toml` - Nixpacks build configuration
+- `packages/api/Procfile` - Process definition (`web: node dist/app.js`)
+
+### Deployment Commands
+```bash
+# From packages/api directory
+railway up --service api-server    # Deploy API to Railway
+railway logs --service api-server  # View deployment logs
+```
+
+### CORS Configuration
+The API allows requests without an `Origin` header to support:
+- Railway healthchecks (don't include Origin)
+- Server-to-server requests
+- CLI tools (curl, etc.)
+
+This is safe because CORS is a browser-only security feature.
 
 ## CI/CD (GitHub Actions)
 
